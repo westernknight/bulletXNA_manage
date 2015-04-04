@@ -10,7 +10,7 @@ public class BulletBox : MonoBehaviour
 
     BoxShape colShape;
     public float mass = 1;
-    private bool isDynamic = false;
+
     private Vector3 size;
     IndexedVector3 bulletScale = new IndexedVector3();
     // Use this for initialization
@@ -22,10 +22,14 @@ public class BulletBox : MonoBehaviour
         bulletScale.Y = transform.localScale.y;
         bulletScale.Z = transform.localScale.z;
         colShape.SetLocalScaling(ref bulletScale);
-        isDynamic = mass != 0f;
+        bool isDynamic = mass != 0f;
         IndexedVector3 localInertia = IndexedVector3.Zero;
-        
+
+        if (isDynamic)
+        {
             colShape.CalculateLocalInertia(mass, out localInertia);
+        }
+            
         
         IndexedMatrix startTransform = IndexedMatrix.Identity;
         startTransform.SetRotation(new IndexedQuaternion(transform.rotation.x,

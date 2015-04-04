@@ -3,7 +3,7 @@ using System.Collections;
 using BulletXNA.LinearMath;
 using System.IO;
 
-public class NewBehaviourScript : MonoBehaviour {
+public class BoxPlacement : MonoBehaviour {
 
     const int ArraySizeX = 5, ArraySizeY = 5, ArraySizeZ = 5;
 
