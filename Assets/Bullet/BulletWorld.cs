@@ -80,9 +80,15 @@ public class BulletWorld : MonoBehaviour
                     myMotionState.GetWorldTransform(out centerOfMassWorldTrans);
 
                     GameObject go = body.GetUserPointer() as GameObject;
+
+                    IndexedQuaternion iq = centerOfMassWorldTrans._basis.GetRotation();
+                   
+
+
                     go.transform.position = new Vector3(centerOfMassWorldTrans._origin.X,
                         centerOfMassWorldTrans._origin.Y,
                         centerOfMassWorldTrans._origin.Z);
+                    go.transform.rotation = new Quaternion(iq.X, iq.Y, iq.Z, iq.W);
                 }
             }
         }
