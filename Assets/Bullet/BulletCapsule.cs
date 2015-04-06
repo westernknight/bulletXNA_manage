@@ -5,18 +5,15 @@ using BulletXNA.BulletCollision;
 using BulletXNA.BulletDynamics;
 using BulletXNA.LinearMath;
 using System.Collections.Generic;
-public class BulletBox : BulletObject
+public class BulletCapsule : BulletObject
 {
-
-    
-
-    // Use this for initialization
+     
     void Start()
     {
-        BoxCollider collider = GetComponent<BoxCollider>();
+        CapsuleCollider collider = GetComponent<CapsuleCollider>();
 
-        BoxShape colShape = new BoxShape(new IndexedVector3(collider.size.x / 2, collider.size.y / 2, collider.size.z / 2));
 
+        ConvexShape colShape = new CapsuleShape(collider.radius, collider.height/2);
         IndexedVector3 bulletScale = new IndexedVector3();
         bulletScale.X = transform.localScale.x;
         bulletScale.Y = transform.localScale.y;

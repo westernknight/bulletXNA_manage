@@ -5,18 +5,16 @@ using BulletXNA.BulletCollision;
 using BulletXNA.BulletDynamics;
 using BulletXNA.LinearMath;
 using System.Collections.Generic;
-public class BulletBox : BulletObject
+public class BulletSphere : BulletObject
 {
-
-    
 
     // Use this for initialization
     void Start()
     {
-        BoxCollider collider = GetComponent<BoxCollider>();
+        SphereCollider collider = GetComponent<SphereCollider>();
 
-        BoxShape colShape = new BoxShape(new IndexedVector3(collider.size.x / 2, collider.size.y / 2, collider.size.z / 2));
 
+        ConvexShape colShape = new SphereShape(collider.radius);
         IndexedVector3 bulletScale = new IndexedVector3();
         bulletScale.X = transform.localScale.x;
         bulletScale.Y = transform.localScale.y;
@@ -24,6 +22,9 @@ public class BulletBox : BulletObject
         colShape.SetLocalScaling(ref bulletScale);
 
         LocalCreateRigidBody(colShape);
+
     }
+
+
 
 }

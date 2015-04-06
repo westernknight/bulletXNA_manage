@@ -8,51 +8,16 @@ using BulletXNA.LinearMath;
 using BulletXNA;
 
 
-public class BulletWaveObject : MonoBehaviour
+public class BulletWaveObject : BulletObject
 {
 
-    public float mass = 1;
-    private bool isDynamic = false;
-    RigidBody rigidBody;
-    public MeshFilter meshFilter;
-    Mesh mesh;
-
-    // Use this for initialization
-
-
-    private void LocalCreateRigidBody(CollisionShape shape)
-    {
-
-        bool isDynamic = mass != 0f;
-        IndexedVector3 localInertia = IndexedVector3.Zero;
-
-        if (isDynamic)
-        {
-            shape.CalculateLocalInertia(mass, out localInertia);
-        }
-
-
-        IndexedMatrix startTransform = IndexedMatrix.Identity;
-        startTransform.SetRotation(new IndexedQuaternion(transform.rotation.x,
-            transform.rotation.y, transform.rotation.z, transform.rotation.w));
-        startTransform._origin = (new IndexedVector3(transform.position.x, transform.position.y, transform.position.z));
-
-        DefaultMotionState myMotionState = new DefaultMotionState(startTransform, IndexedMatrix.Identity);
-        RigidBodyConstructionInfo rbInfo = new RigidBodyConstructionInfo(mass, myMotionState, shape, localInertia);
-        rigidBody = new RigidBody(rbInfo);
-        rigidBody.SetUserPointer(gameObject);
-
-        BulletWorld.Instance.DynamicsWorld.AddRigidBody(rigidBody);
-
-        renderer.material.color = Color.white;
-
-    }
 
     void Start()
     {
+        MeshFilter meshFilter = GetComponent<MeshFilter>();
         if (meshFilter != null)
         {
-            mesh = meshFilter.mesh;
+            Mesh mesh = meshFilter.mesh;
             Vector3[] vertices = mesh.vertices;
 
             List<IndexedVector3> vertices3dList = new List<IndexedVector3>();
@@ -81,8 +46,6 @@ public class BulletWaveObject : MonoBehaviour
                 IndexedVector3 vertex1 = new IndexedVector3(vertices[index1].x, vertices[index1].y, vertices[index1].z);
                 IndexedVector3 vertex2 = new IndexedVector3(vertices[index2].x, vertices[index2].y, vertices[index2].z);
 
-                //trimesh.AddTriangle(vertex0, vertex1, vertex2);
-
                 trimesh.AddTriangle(vertex0, vertex1, vertex2,false);
 
             }
@@ -97,16 +60,5 @@ public class BulletWaveObject : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (rigidBody.GetActivationState() == ActivationState.ISLAND_SLEEPING)
-        {
-            renderer.material.color = Color.red;
-        }
-        else
-        {
-            renderer.material.color = Color.white;
-        }
-    }
+
 }

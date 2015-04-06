@@ -43,13 +43,6 @@ public class BulletWorld : MonoBehaviour
         IndexedVector3 gravity = new IndexedVector3(0, -10, 0);
         m_dynamicsWorld.SetGravity(ref gravity);
 
-
-
-
-
-
-
-
     }
     // Use this for initialization
     void Start()
@@ -62,15 +55,15 @@ public class BulletWorld : MonoBehaviour
     {
         IList<CollisionObject> copyArray = m_dynamicsWorld.GetCollisionObjectArray();
 
-        float ms = 1f / 60f;
         if (m_dynamicsWorld != null)
         {
-            m_dynamicsWorld.StepSimulation(ms, 1);
+            m_dynamicsWorld.StepSimulation(Time.deltaTime, 1);
         }
         foreach (var item in copyArray)
         {
             CollisionObject colObj = item;
             RigidBody body = RigidBody.Upcast(colObj);
+         
             if (body != null)
             {
                 if (body.GetMotionState() != null)
