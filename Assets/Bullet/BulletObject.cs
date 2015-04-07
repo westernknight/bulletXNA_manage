@@ -8,18 +8,15 @@ using BulletXNA;
 public class BulletObject : MonoBehaviour
 {
 
-    
-    RigidBody rigidBody;
-
-    GhostObject ghostObject;
+    protected CollisionObject collisionObject;
     
     public float mass = 1;
     public float friction = 1;
 
     public bool isKinematic = false;
-
+    
     // Use this for initialization
-
+    
     protected void LocalCreateRigidBody(CollisionShape shape)
     {
 
@@ -41,6 +38,7 @@ public class BulletObject : MonoBehaviour
         {
 
 #if false
+            //rigidBody如果不设置MotionState，是不会产生碰撞效果，但如果设置了MotionState，及时设置了CollisionFlags.CF_KINEMATIC_OBJECT，rigidBody会被其他碰撞体影响
             DefaultMotionState myMotionState = new DefaultMotionState(startTransform, IndexedMatrix.Identity);
             RigidBodyConstructionInfo rbInfo = new RigidBodyConstructionInfo(mass, null, shape, localInertia);
             rigidBody = new RigidBody(rbInfo);
@@ -49,12 +47,13 @@ public class BulletObject : MonoBehaviour
             //rigidBody.SetCollisionFlags(BulletXNA.BulletCollision.CollisionFlags.CF_KINEMATIC_OBJECT);
             BulletWorld.Instance.DynamicsWorld.AddRigidBody(rigidBody);
 #else
-            ghostObject = new GhostObject();
-            ghostObject.SetWorldTransform(startTransform);
-            ghostObject.SetCollisionShape(shape);
-            ghostObject.SetFriction(friction);
-            ghostObject.SetCollisionFlags(BulletXNA.BulletCollision.CollisionFlags.CF_KINEMATIC_OBJECT);
-            BulletWorld.Instance.DynamicsWorld.AddCollisionObject(ghostObject);
+            collisionObject = new CollisionObject();
+            collisionObject.SetWorldTransform(startTransform);
+            collisionObject.SetCollisionShape(shape);
+            collisionObject.SetFriction(friction);
+            //如果没有CollisionFlags.CF_KINEMATIC_OBJECT，与collisionObject碰撞的碰撞体会静止，并且当移走collisionObject，碰撞体会静止在空气上            
+            collisionObject.SetCollisionFlags(BulletXNA.BulletCollision.CollisionFlags.CF_KINEMATIC_OBJECT);
+            BulletWorld.Instance.DynamicsWorld.AddCollisionObject(collisionObject);
 
 #endif
 
@@ -65,10 +64,11 @@ public class BulletObject : MonoBehaviour
         {
             DefaultMotionState myMotionState = new DefaultMotionState(startTransform, IndexedMatrix.Identity);
             RigidBodyConstructionInfo rbInfo = new RigidBodyConstructionInfo(mass, myMotionState, shape, localInertia);
-            rigidBody = new RigidBody(rbInfo);
-            rigidBody.SetUserPointer(gameObject);
-            rigidBody.SetFriction(friction);
-            BulletWorld.Instance.DynamicsWorld.AddRigidBody(rigidBody);
+            collisionObject = new RigidBody(rbInfo);
+            collisionObject.SetUserPointer(gameObject);
+            collisionObject.SetFriction(friction);
+
+            BulletWorld.Instance.DynamicsWorld.AddRigidBody(collisionObject as RigidBody);
 
             renderer.material.color = Color.white;
         }
@@ -84,13 +84,12 @@ public class BulletObject : MonoBehaviour
              worldransform.SetRotation(new IndexedQuaternion(transform.rotation.x,
                  transform.rotation.y, transform.rotation.z, transform.rotation.w));
              worldransform._origin = (new IndexedVector3(transform.position.x, transform.position.y, transform.position.z));
-             ghostObject.SetWorldTransform(worldransform);
+             collisionObject.SetWorldTransform(worldransform);
 
-            //rigidBody.SetWorldTransform(worldransform);
         }
         else
         {
-            if (rigidBody.GetActivationState() == ActivationState.ISLAND_SLEEPING)
+            if (((RigidBody)collisionObject).GetActivationState() == ActivationState.ISLAND_SLEEPING)
             {
                 renderer.material.color = Color.red;
             }
