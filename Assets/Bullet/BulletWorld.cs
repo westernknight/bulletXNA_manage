@@ -18,7 +18,14 @@ public class BulletWorld : MonoBehaviour
 
     public static BulletWorld Instance
     {
-        get { return instance; }
+        get {
+            if (instance==null)
+            {
+                GameObject go = new GameObject("BulletWorld");
+                go.AddComponent<BulletWorld>();
+            }
+            
+            return instance; }
     }
     public DynamicsWorld DynamicsWorld
     {

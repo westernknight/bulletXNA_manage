@@ -8,7 +8,7 @@ using BulletXNA;
 public class BulletObject : MonoBehaviour
 {
 
-    protected CollisionObject collisionObject;
+    protected RigidBody collisionObject;
     
     public float mass = 1;
     public float friction = 1;
@@ -16,7 +16,10 @@ public class BulletObject : MonoBehaviour
     public bool isKinematic = false;
     
     // Use this for initialization
-    
+    public RigidBody GetCollisionObject()
+    {
+        return collisionObject;
+    }
     protected void LocalCreateRigidBody(CollisionShape shape)
     {
 
@@ -47,7 +50,7 @@ public class BulletObject : MonoBehaviour
             //rigidBody.SetCollisionFlags(BulletXNA.BulletCollision.CollisionFlags.CF_KINEMATIC_OBJECT);
             BulletWorld.Instance.DynamicsWorld.AddRigidBody(rigidBody);
 #else
-            collisionObject = new CollisionObject();
+            collisionObject = new RigidBody();
             collisionObject.SetWorldTransform(startTransform);
             collisionObject.SetCollisionShape(shape);
             collisionObject.SetFriction(friction);
